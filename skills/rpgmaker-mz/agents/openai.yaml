@@ -1,0 +1,4 @@
+interface:
+  display_name: "RPG Maker MZ 本地开发"
+  short_description: "连接本机 MZ，制作地图、事件、数据库并运行游戏验证"
+  default_prompt: "使用 $rpgmaker-mz 连接我的 MZ 工程并检查地图与事件。"

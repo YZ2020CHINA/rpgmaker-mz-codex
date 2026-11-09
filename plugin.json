@@ -1,0 +1,32 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "rpgmaker-mz-local",
+  "version": "1.0.0",
+  "license": "MIT",
+  "description": "通过 MCP 操作本机 RPG Maker MZ 工程、地图、事件与数据库，启动编辑器并自动试玩。",
+  "author": {
+    "name": "Local RPG Maker integration"
+  },
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "RPG Maker MZ 本地开发",
+        "shortDescription": "连接本机 MZ，编辑地图事件和数据库并验证游戏",
+        "longDescription": "基于 Redseb/rpgmaker-mz-mcp 的 128 项工程工具，补充 Windows 安装检测、新建工程、编辑器启动、NW.js 试玩、备份和变更检查。包含中文技能与图块目录技能。工程通过磁盘文件编辑；已打开的编辑器需保存、关闭并重新打开工程。需要合法安装的 RPG Maker MZ 和 Node.js 20+。",
+        "developerName": "Local RPG Maker integration",
+        "category": "Developer Tools",
+        "capabilities": [
+          "Read",
+          "Write"
+        ],
+        "brandColor": "#5C6FD6",
+        "logo": "./assets/logo.png",
+        "composerIcon": "./assets/logo.png",
+        "defaultPrompt": [
+          "检查本机 RPG Maker MZ 安装并连接我的游戏工程。",
+          "新建一个 MZ 测试工程，制作带中文对白的 NPC 并运行试玩。"
+        ]
+      }
+    }
+  }
+}

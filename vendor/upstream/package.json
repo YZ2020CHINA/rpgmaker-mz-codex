@@ -1,0 +1,70 @@
+{
+  "name": "rpgmaker-mz-mcp",
+  "version": "1.4.0",
+  "description": "High-quality MCP server for RPG Maker MZ integration - manage game data, maps, events, and plugins",
+  "mcpName": "io.github.Redseb/rpgmaker-mz-mcp",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "rpgmaker-mz-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "sync:tools": "node scripts/sync-tool-count.mjs",
+    "sync:tools:check": "node scripts/sync-tool-count.mjs --check",
+    "sync:version": "node scripts/sync-version.mjs",
+    "sync:version:check": "node scripts/sync-version.mjs --check",
+    "bundle:mcpb": "node scripts/build-mcpb.mjs",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run lint && npm run typecheck && npm run sync:version:check && npm test"
+  },
+  "keywords": [
+    "mcp",
+    "rpgmaker",
+    "rpg-maker-mz",
+    "game-development",
+    "model-context-protocol"
+  ],
+  "author": "Mikolaj Zyzanski",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Redseb/rpgmaker-mz-mcp.git"
+  },
+  "homepage": "https://github.com/Redseb/rpgmaker-mz-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/Redseb/rpgmaker-mz-mcp/issues"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.4",
+    "@types/node": "^22.10.5",
+    "eslint": "^9.39.4",
+    "prettier": "^3.9.5",
+    "tsx": "^4.23.1",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.63.0",
+    "vitest": "^3.2.7"
+  },
+  "optionalDependencies": {
+    "playwright-core": "^1.63.0"
+  }
+}
