@@ -19,8 +19,9 @@ await cp(path.join(root, 'assets'), path.join(out, 'assets'), { recursive: true 
 await cp(path.join(root, 'vendor/upstream/LICENSE'), path.join(out, 'UPSTREAM-LICENSE.txt'));
 await mkdir(path.join(out, 'node_modules'), { recursive: true });
 await cp(path.join(root, 'node_modules/playwright-core'), path.join(out, 'node_modules/playwright-core'), { recursive: true, dereference: true });
-const manifest = { mcpServers: { 'rpgmaker-mz': { type: 'stdio', command: 'node', args: ['${CLAUDE_PLUGIN_ROOT}/server.mjs'], startup_timeout_sec: 30, tool_timeout_sec: 300 } } };
-// Local installer resolves command and plugin-root tokens in the installed cache.
+const manifest = { $schema: 'https://agent-plugins.org/schemas/1.0.0/mcp.schema.json', mcpServers: { 'rpgmaker-mz': { type: 'stdio', command: 'cmd.exe', args: ['/d', '/s', '/c', 'call', './launch-mcp.cmd'], cwd: './' } } };
+// Codex requires a bare executable; install-plugin.ps1 rewrites launch-mcp.cmd with the local Node path.
+await writeFile(path.join(out, 'launch-mcp.cmd'), '@echo off\r\nchcp 65001 >nul\r\nnode "%~dp0server.mjs"\r\n');
 await writeFile(path.join(out, 'mcp.json'), JSON.stringify(manifest, null, 2));
 const marketplace = { name: 'rpgmaker-mz-local-market', interface: { displayName: 'RPG Maker MZ 本地插件' }, plugins: [{ name: 'rpgmaker-mz-local', source: { source: 'local', path: './plugins/rpgmaker-mz-local' }, policy: { installation: 'AVAILABLE', authentication: 'ON_INSTALL' }, category: 'Developer Tools' }] };
 await mkdir(path.join(root, '.agents/plugins'), { recursive: true });

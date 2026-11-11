@@ -1,6 +1,5 @@
 """Package only redistributable integration files; never include RPG Maker assets."""
 import hashlib
-import json
 from pathlib import Path
 import zipfile
 
@@ -13,10 +12,8 @@ files += [p for p in (ROOT / 'plugins').rglob('*') if p.is_file() and p.name != 
 with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED) as bundle:
     for source in sorted(files):
         member = 'rpgmaker-mz-codex/' + source.relative_to(ROOT).as_posix()
-        if source.name == 'mcp.json':
-            manifest = json.loads(source.read_text(encoding='utf-8'))
-            manifest['mcpServers']['rpgmaker-mz']['command'] = 'node'
-            bundle.writestr(member, json.dumps(manifest, indent=2))
+        if source.name == 'launch-mcp.cmd':
+            bundle.writestr(member, '@echo off\r\nchcp 65001 >nul\r\nnode "%~dp0server.mjs"\r\n')
         else:
             bundle.write(source, member)
 digest = hashlib.sha256(archive.read_bytes()).hexdigest()

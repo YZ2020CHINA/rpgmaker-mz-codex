@@ -30,8 +30,10 @@ if (-not (Test-Path -LiteralPath (Join-Path $runtime 'server.mjs'))) { throw 'Bu
 $utf8 = [Text.UTF8Encoding]::new($false)
 $cfg = @{ installPath = $MZPath; chromiumPath = "$ChromiumPath"; projectPath = "$ProjectPath" }
 [IO.File]::WriteAllText((Join-Path $runtime 'config.json'), ($cfg | ConvertTo-Json), $utf8)
-# Codex copies local plugin source to its cache. ${CLAUDE_PLUGIN_ROOT} resolves there at activation.
-$mcp = @{ mcpServers = @{ 'rpgmaker-mz' = @{ type = 'stdio'; command = [IO.Path]::GetFullPath($NodePath); args = @('${CLAUDE_PLUGIN_ROOT}/server.mjs'); startup_timeout_sec = 30; tool_timeout_sec = 300 } } }
+# Codex plugin stdio servers must use a bare executable; the launcher holds the absolute Node path.
+$launcher = "@echo off`r`nchcp 65001 >nul`r`n""" + [IO.Path]::GetFullPath($NodePath) + """ ""%~dp0server.mjs""`r`n"
+[IO.File]::WriteAllText((Join-Path $runtime 'launch-mcp.cmd'), $launcher, $utf8)
+$mcp = [ordered]@{ '$schema' = 'https://agent-plugins.org/schemas/1.0.0/mcp.schema.json'; mcpServers = @{ 'rpgmaker-mz' = [ordered]@{ type = 'stdio'; command = 'cmd.exe'; args = @('/d', '/s', '/c', 'call', './launch-mcp.cmd'); cwd = './' } } }
 [IO.File]::WriteAllText((Join-Path $runtime 'mcp.json'), ($mcp | ConvertTo-Json -Depth 8), $utf8)
 if ($PrepareOnly) { Write-Output "Prepared: $runtime"; return }
 $codexExe = (Get-Command codex -ErrorAction Stop).Source

@@ -4,6 +4,16 @@
 
 插件 logo 为 Aseprite 制作的 48×48 原创透明像素角色：黄毛朋克少年、皮夹克、金属链和香烟。`assets/logo.png` 是正式图标，`assets/punk-logo.aseprite` 是 7 层可编辑母版，`assets/punk-logo-preview.png` 是 8 倍最近邻预览。图标已配置到插件列表与输入框图标。
 
+## Codex 中使用 Claude / GPT 调用插件（2026-11-11 更新）
+
+这次更新后，**在 Codex 里切换到 Claude 模型（例如通过 Magpie 等中转站接入的 Claude API）也可以正常调用本插件的工具和 skill**，与使用 GPT 模型时一致。
+
+- 已在 Codex 桌面版（Windows）实测：修复后 Claude 与 GPT 会话都能加载这组本地插件的 MCP 工具，并实际调用了 Blender、Aseprite、Flux、Stable Audio 的状态工具。
+- 原因：Codex 读取插件 `mcp.json` 时只接受 `type`、`command`、`args`、`env`、`cwd`，`command` 必须是裸可执行名，并会拒绝 `startup_timeout_sec`、`tool_timeout_sec` 等字段；旧格式导致部分模型会话里插件工具不出现。
+- 现在构建脚本生成的 `mcp.json` 统一使用 `cmd.exe` 调用插件目录内的 `launch-mcp.cmd`，本机 Python/Node 的绝对路径和环境变量写在启动器里。
+- 已安装旧版本的用户：重新运行安装/构建脚本后，**新开一个 Codex 聊天或重启 Codex** 即可生效。
+- 长任务需要更长超时时，可在 `~/.codex/config.toml` 对应的 `[mcp_servers.<名称>]` 中设置 `tool_timeout_sec`。
+
 ## 连接方式
 
 MCP 直接编辑游戏工程文件。`mz_open_editor` 启动本机 `RPGMZ.exe` 并返回工程路径；本机 MZ 1.10 实测可能忽略命令行工程参数，此时需在“文件 → 打开工程”选择该路径。`mz_launch_playtest` 用 MZ 附带的 NW.js 启动试玩，`run_playtest` 用 Chromium 自动验证。插件不读取 Qt 编辑器当前选区或未保存状态，也不提供编辑器内按钮点击/热刷新。
